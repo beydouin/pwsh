@@ -1,6 +1,6 @@
 <#
 # update_custom_attributes.ps1
-# Khurram.Subhani@ssc-spc.gc.ca
+# Khurram.Subhani@live.com
 # 2023-02-20
 # v2.0.0
 # 
