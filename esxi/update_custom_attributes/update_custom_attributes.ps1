@@ -2,7 +2,7 @@
 # update_custom_attributes.ps1
 # Khurram.Subhani@ssc-spc.gc.ca
 # 2023-02-20
-# v1.0
+# v2.0.0
 # 
 # A script to update multiple 'Custom Attributes' on multiple esxi virtual 
 #  machines. You will need to populate file in the current location called
@@ -16,46 +16,48 @@
 # Path to list of servers file
 $servers= Get-Content .\servers.txt
 
-# Ask users for value of annotation
-$build_date=Read-Host -Prompt "[E]nter Build Date"
-$department_owner=Read-Host -Prompt "[E]nter Department Owner"
-$department_ownership=Read-Host -Prompt "[E]nter Department Ownership"
-$inital_brd=Read-Host -Prompt "[E]nter Inital BRD"
-$project_code=Read-Host -Prompt "[E]nter Project Code"
-$project_description=Read-Host -Prompt "[E]nter Project Description"
-#$srm_com=Read-Host -Prompt "[E]nter SRM-com.vmware.vcDr:::protected"
-$support_group=Read-Host -Prompt "[E]nter Support Group"
+# Specify an array of keys
+$keys=@("Build Date","Department Owner","Department Ownership","Initial BRD","Project Code","Project Description","Support Group")
+
+# Array of values will get populated via for loop
+$values=@()
+
+# Ask users for value of each key specified
+for ($i=0;$i -le $keys.Length-1;$i++) {
+	$thekey=$keys[$i]
+	if ($thekey -ne "State") {
+		$values += Read-Host -Prompt "[E]nter $thekey"
+	}
+}
 
 # List thru each server and set annotation
 foreach ($server in $servers) {
   $servertype=$server.substring(5,1)
+  $state=""
   
   # Label 'state' based on substring character taken from $servertype
-  if ( $servertype -eq "t" -or $servertype -eq "a" -or $servertype -eq "e" -or $servertype -eq "o" -or $servertype -eq "h" -or $servertype -eq "j" -or $servertype -eq "l") {
-    $state="TRANSITIONAL"
-  } elseif ( $servertype -eq "p" -or $servertype -eq "f" -or $servertype -eq "w" -or $servertype -eq "k" -or $servertype -eq "c") {
-    $state="PRODUCTION"
-  } elseif ( $servertype -eq "i" -or $servertype -eq "q") {
-    $state="PRE-DEVELOPMENT"
-  } elseif ($servertype -eq "d" -or $servertype -eq "u" -or $servertype -eq "s" -or $servertype -eq "y") {
-    $state="DEVELOPMENT"
-  } elseif ($servertype -eq "z") {
-	$state="LAB"
-  } else { $state="INVALID OPTION: $servertype" }
-  
-  # clear the below state if you need to clean out the attributes
-  #$state=""
+  switch ($servertype) {
+	  {($_ -eq "t") -or ($_ -eq "a") -or ($_ -eq "e") -or ($_ -eq "o") -or ($_ -eq "h") -or ($_ -eq "j") -or ($_ -eq "l")} {$state="TRANSITIONAL"; break}
+	  {($_ -eq "p") -or ($_ -eq "f") -or ($_ -eq "w") -or ($_ -eq "k") -or ($_ -eq "c")} {$state="PRODUCTION"; break}
+	  {($_ -eq "d") -or ($_ -eq "u") -or ($_ -eq "s") -or ($_ -eq "y")} {$state="DEVELOPMENT"; break}
+	  {($_ -eq "i") -or ($_ -eq "q")} {$state="PRE-DEVELOPMENT"; break}
+	  "z" {$state="LAB"; break}
+	  default {$state="INVALID OPTION: $servertype" }
+  }
   
   # setting the attributes
-  Set-Annotation -Entity $server -CustomAttribute "Build Date" -Value "$build_date"
-  Set-Annotation -Entity $server -CustomAttribute "Department Owner" -Value "$department_owner"
-  Set-Annotation -Entity $server -CustomAttribute "Department Ownership" -Value "$department_ownership"
-  Set-Annotation -Entity $server -CustomAttribute "Initial BRD" -Value "$inital_brd"
-  Set-Annotation -Entity $server -CustomAttribute "Project Code" -Value "$project_code"
-  Set-Annotation -Entity $server -CustomAttribute "Project Description" -Value "$project_description"
-  #Set-Annotation -Entity $server -CustomAttribute "SRM-com.vmware.vcDr:::protected" -Value "$srm_com"
+  for ($i=0;$i -le $keys.Length-1;$i++){
+	  for ($j=0;$j -le $values.Length-1;$j++) {
+		  $thekey=$keys[$i]
+		  $thevalue=$values[$j]
+		  
+		  if ($i -eq $j) {
+			  Set-Annotation -Entity $server -CustomAttribute "$thekey" -Value "$thevalue"
+		  }
+		  
+	  }
+  }
   Set-Annotation -Entity $server -CustomAttribute "State" -Value "$state"
-  Set-Annotation -Entity $server -CustomAttribute "Support Group" -Value "$support_group"
   
   # write an empty line
   write-output "`n"
