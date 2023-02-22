@@ -14,7 +14,7 @@
 #>
 
 # Use a list of servers in a file
-vmNames = Get-Content .\servers.txt
+$vmNames = Get-Content .\servers.txt
 
 $Attributes = @{}
 $attributeNames = @("Build Date","Department Owner","Department Ownership","Initial BRD","Project Code","Project Description","Support Group")
