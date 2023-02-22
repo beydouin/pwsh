@@ -14,7 +14,7 @@
 #>
 
 # Connect to ESXi host: Specify the hosts before running this script
-Connect-VIServer -Server $ESXiHost,$ESXiHost
+Connect-VIServer -Server ESXiHost,ESXiHost
 
 $vmNames = Read-Host "[E]nter virtual machine hostnames (separated by comma)"
 $vmNames = $vmNames.Split(",")
@@ -39,6 +39,6 @@ ForEach ($vmName in $vmNames) {
 
     foreach ($key in $Attributes.Keys) {
         $value = $Attributes[$key]
-        Write-Host "Set-Annotation -Entity $vmName -CustomAttribute "$key" -Value "$value""
+        Set-Annotation -Entity $vmName -CustomAttribute "$key" -Value "$value"
     }
 }
