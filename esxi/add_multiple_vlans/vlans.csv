@@ -1,0 +1,27 @@
+VlanName,VlanId
+"VM LAB 10.230.101.x",101
+"VM DMZ 199.198.134.x",3134
+"VM Heartbeat",398
+"VM Online 10.220.100.x",2100
+"VM Server 10.230.10.x",310
+"VM Server 10.230.100.x",100
+"VM Server 10.230.12.x",312
+"VM Server 10.230.14.x",314
+"VM Server 10.230.16.x",316
+"VM Server 10.230.18.x",318
+"VM Server 10.230.20.x",320
+"VM Server 10.230.22.x",322
+"VM Server 10.230.26.x",326
+"VM Server 10.230.28.x",328
+"VM Server 10.230.30.x",330
+"VM Server 10.230.34.x",334
+"VM Server 10.230.36.x",336
+"VM Server 10.230.39.x",339
+"VM Server 10.230.40.x",340
+"VM Server 10.230.43.x",343
+"VM Server 10.230.46.x",346
+"VM Server 10.230.60.x",360
+"VM Server 10.230.80.x",380
+"VM Server 10.230.81.x",381
+"VM Server 10.230.90.x",390
+
